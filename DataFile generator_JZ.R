@@ -1,7 +1,14 @@
-library(MASS)
-library(dplyr)
-install.packages("DescTools")
-library(DescTools)
+## Package setup
+
+# Package install
+package.list <- c("MASS","dplyr","DescTools")
+new.packages <- package.list[!(package.list %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+# Package load
+lapply(package.list, require, character.only = TRUE)
+
+
 
 setwd("C:/Users/jzhu5/OneDrive - Imperial College London/Project/RSTL_India/BMI data")
 prevalence <- read.csv("prevalence_data.csv")
