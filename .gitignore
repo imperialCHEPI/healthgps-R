@@ -10,7 +10,6 @@
 
 # CMake presets, build directories and binary files
 build/
-out/
 cmake-build-*/
 
 ## User spesific settings
