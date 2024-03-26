@@ -1,12 +1,13 @@
 ## Package setup
 
 # Package install
-package.list <- c("MASS","dplyr","DescTools")
-new.packages <- package.list[!(package.list %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+package_list <- c("MASS", "dplyr", "DescTools")
+new_packages <- package_list[!(package_list %in% 
+    installed.packages()[, "Package"])]
+if(length(new_packages)) install.packages(new_packages)
 
 # Package load
-lapply(package.list, require, character.only = TRUE)
+lapply(package_list, require, character.only = TRUE)
 
 
 
@@ -138,7 +139,7 @@ dff_male <- data.frame()
     sample_bmi <- mvrnorm(size, mu = means, Sigma = cov_matrix, empirical = TRUE)
     sample_bmi <- as.data.frame(sample_bmi)
     colnames(sample_bmi) <- c("V1","bmi")
-    sample_bmi$bmi <- Winsorize(sample_bmi$bmi, probs = c(0.05,1),na.rm = TRUE)
+    sample_bmi$bmi <- Winsorize(sample_bmi$bmi, probs = c(0.05,1), na.rm = TRUE)
     print(mean(sample_bmi$bmi>=30))
     subdata$order <- order(subdata$EnergyIntake)
     sample_bmi$order <- order(sample_bmi$bmi)

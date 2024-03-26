@@ -5,6 +5,9 @@
 
 # ------------ Custom User Options ----------------
 
+# Ignore the data folder as it is huge.
+/data
+
 # CMake presets, build directories and binary files
 build/
 out/

@@ -10,3 +10,6 @@ plot(a)
 
 tail(a)
 
+####
+# The new plan is to develop a set of function that run through all of Ali's 
+# scripts, plus Jingmin's
