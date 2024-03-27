@@ -1,21 +1,27 @@
-#######################################################################################################################
-######################## Libraries and Packages Initialisation##########################################################
+################################################################################
+########## THIS FILE IS A CARBON COPY OF NutrientModelling.R ###################
+################################################################################
 
-library('stargazer')
-library(ggplot2)
-library(dplyr) 
-library(nnet)
-library(zoo)
-library(moments)
-library(MASS)
-library(tidyr)
-library(corrplot)
+################################################################################
+######################## Libraries and Packages Initialisation##################
 
-#######################################################################################################################
-######################## Data Loading and Variable Extraction ##########################################################
+## Package setup
+
+# Package install
+package_list <- c("stargazer", "ggplot2", "dplyr", "nnet", "zoo", "moments", 
+    "MASS", "tidyr", "corrplot")
+new_packages <- package_list[!(package_list %in% 
+    installed.packages()[, "Package"])]
+if(length(new_packages)) install.packages(new_packages)
+
+# Package load
+lapply(package_list, require, character.only = TRUE)
+
+################################################################################
+######################## Data Loading and Variable Extraction ##################
 
 # Load the CSV data into a data frame
-file_name <- "Health_GPS_ind_20231012.csv"
+file_name <- "data/maxime-180324/Health_GPS_ind_baseline.csv"
 data <- read.csv(file_name)
 
 # Attach the data frame for easier variable referencing
@@ -38,8 +44,8 @@ energy_original <- data$ind_energy_kcal
 # Calculate 'energy' based on the standard formula
 energy <- 4 * carb + 9 * fat + 4 * protein + 0 * sodium
 
-############################################################################################
-########################Filtering##########################################################
+################################################################################
+########################Filtering###############################################
 
 # Create 'subdata' dataframe
 subdata <- data.frame(sex, age, age1, age2, age3, inc, sector, carb, fat, protein, sodium, energy, energy_original)
@@ -55,15 +61,15 @@ lower_q <- 1-upper_q
 df <- subdata %>%
   filter(
     age < 100,  # Age less than 100
-    carb > quantile(carb, lower_q) & carb < quantile(carb, upper_q),  # Carb within quantiles
-    fat > quantile(fat, lower_q) & fat < quantile(fat, upper_q),  # Fat within quantiles
+    carb > quantile(carb, lower_q) & carb < quantile(carb, upper_q),              # Carb within quantiles
+    fat > quantile(fat, lower_q) & fat < quantile(fat, upper_q),                  # Fat within quantiles
     protein > quantile(protein, lower_q) & protein < quantile(protein, upper_q),  # Protein within quantiles
-    sodium > quantile(sodium, lower_q) & sodium < quantile(sodium, upper_q),  # Sodium within quantiles
-    energy > quantile(energy, lower_q) & energy < quantile(energy, upper_q)  # Energy within quantiles
+    sodium > quantile(sodium, lower_q) & sodium < quantile(sodium, upper_q),      # Sodium within quantiles
+    energy > quantile(energy, lower_q) & energy < quantile(energy, upper_q)       # Energy within quantiles
   )
 
-############################################################################################
-########################Summary Statistics by Age and Sex#######################################
+################################################################################
+########################Summary Statistics by Age and Sex#######################
 
 # Calculate mean values for 'carb', 'fat', 'protein', 'sodium', and 'energy' based on 'age' and 'sex'
 result <- df %>%
@@ -79,8 +85,8 @@ result <- df %>%
 # Merge the calculated mean values back to the original dataframe ('df')
 merged_df <- merge(df, result, by = c("sex", "age"), all.x = TRUE)
 
-############################################################################################
-########################BOX-COX Transformation: Carb#######################################
+################################################################################
+########################BOX-COX Transformation: Carb############################
 
 # Calculate Box-Cox transformation for 'carb' variable
 x <- merged_df$carb / merged_df$carb_mean
@@ -120,8 +126,8 @@ main_title <- "Carbs: Transformed Distribution vs. Random Normal Distribution"
 plot(density(carb_transformed), col="red", lwd=3, main = main_title)
 lines(density(random_values), col="blue", lwd=3)
 
-############################################################################################
-########################BOX-COX Transformation: Fat#########################################
+################################################################################
+########################BOX-COX Transformation: Fat#############################
 
 # Calculate Box-Cox transformation for 'fat' variable
 x <- merged_df$fat / merged_df$fat_mean
@@ -164,8 +170,8 @@ main_title <- "Fat: Transformed Distribution vs. Random Normal Distribution"
 plot(density(fat_transformed), col="red", lwd=3, main = main_title)
 lines(density(random_values), col="blue", lwd=3)
 
-############################################################################################
-########################BOX-COX Transformation: Protein####################################
+################################################################################
+########################BOX-COX Transformation: Protein#########################
 
 # Calculate Box-Cox transformation for 'protein' variable
 x <- merged_df$protein / merged_df$protein_mean
@@ -205,8 +211,8 @@ main_title <- "Protein: Transformed Distribution vs. Random Normal Distribution"
 plot(density(protein_transformed), col="red", lwd=3, main = main_title)
 lines(density(random_values), col="blue", lwd=3)
 
-############################################################################################
-########################BOX-COX Transformation: Sodium#######################################################
+################################################################################
+########################BOX-COX Transformation: Sodium##########################
 
 # Calculate Box-Cox transformation for 'sodium' variable
 x <- merged_df$sodium / merged_df$sodium_mean
@@ -246,8 +252,8 @@ main_title <- "Sodium: Transformed Distribution vs. Random Normal Distribution"
 plot(density(sodium_transformed), col="red", lwd=3, main = main_title)
 lines(density(random_values), col="blue", lwd=3)
 
-############################################################################################
-########################Box-Cox Transformation Parameters#######################################################
+################################################################################
+########################Box-Cox Transformation Parameters#######################
 
 lambda = c(lambda_carb,lambda_fat,lambda_protein,lambda_sodium)
 sd = c(sd_carb,sd_fat,sd_protein,sd_sodium)
@@ -255,8 +261,8 @@ sd = c(sd_carb,sd_fat,sd_protein,sd_sodium)
 boxcoxparameters = data.frame(lambda,sd)
 rownames(boxcoxparameters) = c("carb","fat","protein","sodium")
 
-#########################################################################################
-##############################Nutrient Regression Residuals & Correlations################################
+################################################################################
+##############################Nutrient Regression Residuals & Correlations######
 
 # Create a dataframe 'nutrients_residuals' containing residuals from regression models for nutrients
 nutrients_residuals <- data.frame(
@@ -279,16 +285,16 @@ corrplot(correlation_matrix, type="upper", title=main_title)
 #######################################Output Files###################################
 
 # Save the coefficients from regression models for transformed variables ('carb', 'fat', 'protein', 'sodium') using Box-Cox transformation
-write.csv(reg_carb$coefficients, "boxcox_carb_coefficients.csv")
-write.csv(reg_fat$coefficients, "boxcox_fat_coefficients.csv")
-write.csv(reg_protein$coefficients, "boxcox_protein_coefficients.csv")
-write.csv(reg_sodium$coefficients, "boxcox_sodium_coefficients.csv")
+write.csv(reg_carb$coefficients, "out/boxcox_carb_coefficients2.csv")
+write.csv(reg_fat$coefficients, "out/boxcox_fat_coefficients2.csv")
+write.csv(reg_protein$coefficients, "out/boxcox_protein_coefficients2.csv")
+write.csv(reg_sodium$coefficients, "out/boxcox_sodium_coefficients2.csv")
 
 # Save Box-Cox transformation parameters to a CSV file
-write.csv(boxcoxparameters, "boxcox_parameters.csv")
+write.csv(boxcoxparameters, "out/boxcox_parameters2.csv")
 
 # Save correlation matrix to a CSV file
-write.csv(cor, "boxcox_correlationmatrix.csv")
+write.csv(correlation_matrix, "out/boxcox_correlationmatrix2.csv")
 
 #####################################################################################
 #####################################################################################

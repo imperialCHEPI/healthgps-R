@@ -15,6 +15,7 @@ setwd("C:/Users/jzhu5/OneDrive - Imperial College London/Project/RSTL_India/BMI 
 prevalence <- read.csv("prevalence_data.csv")
 mean_sd <- read.csv("mean_sd.csv")
 
+## This should read the 'incomplete' data file created by Ali's scripts
 setwd("C:/Users/jzhu5/OneDrive - Imperial College London/Project/RSTL_India/Input data")
 data <- read.csv("India.DataFile.JZ.csv")
 

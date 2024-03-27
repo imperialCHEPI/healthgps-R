@@ -303,6 +303,8 @@ coefficients <- coefficients[order(rownames(coefficients)), ]
 
 write.csv(coefficients,"income_model.csv")
 
+#### Carrying on from here.
+
 # Generate predicted probabilities for each class
 predicted_probs <- predict(model, type = "probs")
 
@@ -339,8 +341,8 @@ barplot(
   names.arg = prevalence_data$Category
 )
 
-######################################################################################
-####################################Data File Creation###########################################
+################################################################################
+####################################Data File Creation##########################
 
 output_age = df$age
 output_sex = ifelse(df$sex=="1","Male","Female")
@@ -371,7 +373,7 @@ sampled_df <- sampled_df[order(sampled_df$age, sampled_df$sex), ]
 rownames(sampled_df) <- 1:nrow(sampled_df)
 
 # Write the output dataframe to a CSV file
-write.csv(sampled_df, file = paste0(country, ".DataFile.Incomplete.csv"))
+write.csv(sampled_df, file = paste0("out/",country, ".DataFile.Incomplete.csv"))
 
 #####################################################################################
 #####################################################################################

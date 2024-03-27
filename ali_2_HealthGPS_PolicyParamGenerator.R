@@ -1,23 +1,27 @@
-#######################################################################################################################
-######################## Libraries and Packages Initialisation##########################################################
+################################################################################
+######################## Libraries and Packages Initialisation##################
 
-library('stargazer')
-library(ggplot2)
-library(dplyr) 
-library(nnet)
-library(zoo)
-library(moments)
-library(MASS)
-library(tidyr)
-library(corrplot)
+## Package setup
 
-#######################################################################################################################
-######################## Parameters ##########################################################
+# Package install
+package_list <- c("stargazer", "ggplot2", "dplyr", "nnet", "zoo", "moments", 
+    "MASS", "tidyr", "corrplot")
+new_packages <- package_list[!(package_list %in% 
+    installed.packages()[, "Package"])]
+if(length(new_packages)) install.packages(new_packages)
 
-#File to use
-file_name <- "Health_GPS_final_main_20231109.csv"
+# Package load
+lapply(package_list, require, character.only = TRUE)
 
-#Filter threshold 
+################################################################################
+######################## Parameters ############################################
+
+# File to use
+# Not at all clear which file I should be pointing to here.
+# needs to be something with 'ind_ic_pr_sodium_mg_'
+file_name <- "data/maxime-180324/Health_GPS_ind_baseline.csv"
+
+# Filter threshold 
 filter <- 0.005 
 
 # Scenario identifier
